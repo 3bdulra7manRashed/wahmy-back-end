@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Support;
+namespace App\Shared\Http;
 
 use Illuminate\Http\JsonResponse;
 

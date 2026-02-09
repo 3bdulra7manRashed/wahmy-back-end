@@ -6,7 +6,6 @@ namespace App\Enums;
 
 enum UserRole: string
 {
-    case SUPER_ADMIN = 'super_admin';
     case ADMIN = 'admin';
     case CUSTOMER = 'customer';
 
@@ -16,7 +15,6 @@ enum UserRole: string
     public function label(): string
     {
         return match ($this) {
-            self::SUPER_ADMIN => 'Super Admin',
             self::ADMIN => 'Admin',
             self::CUSTOMER => 'Customer',
         };
@@ -33,23 +31,10 @@ enum UserRole: string
     }
 
     /**
-     * Get admin-level roles (can access admin features).
-     *
-     * @return array<self>
-     */
-    public static function adminRoles(): array
-    {
-        return [
-            self::SUPER_ADMIN,
-            self::ADMIN,
-        ];
-    }
-
-    /**
      * Check if this role can access the admin panel.
      */
     public function canAccessAdminPanel(): bool
     {
-        return in_array($this, self::adminRoles(), true);
+        return $this === self::ADMIN;
     }
 }

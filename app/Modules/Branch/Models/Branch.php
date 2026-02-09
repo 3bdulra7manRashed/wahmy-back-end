@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domains\Branches\Models;
+namespace App\Modules\Branch\Models;
 
 use App\Enums\DayOfWeek;
 use Carbon\Carbon;
@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Domains\Branches\Models\BranchWorkingHour;
 
 class Branch extends Model
 {

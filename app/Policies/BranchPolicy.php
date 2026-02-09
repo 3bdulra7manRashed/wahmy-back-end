@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Domains\Branches\Models\Branch;
+use App\Modules\Branch\Models\Branch;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

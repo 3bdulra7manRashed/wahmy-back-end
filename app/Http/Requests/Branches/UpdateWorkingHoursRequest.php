@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Branches;
 
-use App\Domains\Branches\Models\Branch;
+use App\Modules\Branch\Models\Branch;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 

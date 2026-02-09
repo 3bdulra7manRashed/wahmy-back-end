@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domains\Branches\Models\Branch;
+use App\Modules\Branch\Models\Branch;
 use App\Domains\Branches\Models\BranchWorkingHour;
 use App\Enums\DayOfWeek;
 use Carbon\Carbon;

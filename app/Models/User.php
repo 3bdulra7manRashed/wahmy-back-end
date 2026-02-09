@@ -8,12 +8,12 @@ use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -22,9 +22,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'phone',
         'email',
         'password',
         'role',
+        'gender',
+        'date_of_birth',
+        'country',
+        'branch_id',
     ];
 
     /**
@@ -46,28 +51,20 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
+            'date_of_birth' => 'date',
+            'is_active' => 'boolean',
             'password' => 'hashed',
             'role' => UserRole::class,
         ];
     }
 
     /**
-     * Check if user is a super admin.
-     */
-    public function isSuperAdmin(): bool
-    {
-        return $this->role === UserRole::SUPER_ADMIN;
-    }
-
-    /**
-     * Check if user has any admin role (super admin or admin).
+     * Check if user is an admin.
      */
     public function isAdmin(): bool
     {
-        return in_array($this->role, [
-            UserRole::SUPER_ADMIN,
-            UserRole::ADMIN,
-        ], true);
+        return $this->role === UserRole::ADMIN;
     }
 
     /**
@@ -76,5 +73,25 @@ class User extends Authenticatable
     public function isCustomer(): bool
     {
         return $this->role === UserRole::CUSTOMER;
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array<string, mixed>
+     */
+    public function getJWTCustomClaims(): array
+    {
+        return [];
     }
 }

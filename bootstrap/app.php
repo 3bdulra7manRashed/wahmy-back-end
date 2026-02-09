@@ -20,8 +20,24 @@ return Application::configure(basePath: dirname(__DIR__))
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \App\Http\Middleware\SetLocaleFromHeader::class,
         ]);
+
+        // Register middleware aliases
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
+
+        // CRITICAL: Prevent redirect for API routes (API-only JWT project)
+        // Returns null for API routes which triggers AuthenticationException instead of redirect
+        $middleware->redirectGuestsTo(fn () => null);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+
+        // CRITICAL: Force JSON rendering for all API requests
+        // This ensures exceptions are rendered as JSON, not HTML/redirect
+        $exceptions->shouldRenderJsonWhen(fn (Request $request, Throwable $e) => 
+            $request->is('api/*') || $request->expectsJson()
+        );
 
         // Handle ValidationException
         $exceptions->render(function (ValidationException $e, Request $request) {
@@ -34,14 +50,49 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // Handle AuthenticationException
+        // Handle JWT Token Exceptions
+        $exceptions->render(function (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token has expired.',
+            ], 401);
+        });
+
+        $exceptions->render(function (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token is invalid.',
+            ], 401);
+        });
+
+        $exceptions->render(function (\Tymon\JWTAuth\Exceptions\TokenBlacklistedException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token has been blacklisted.',
+            ], 401);
+        });
+
+        $exceptions->render(function (\Tymon\JWTAuth\Exceptions\JWTException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token error: ' . $e->getMessage(),
+            ], 401);
+        });
+
+        // Handle AuthenticationException (always return JSON for API)
         $exceptions->render(function (AuthenticationException $e, Request $request) {
-            if ($request->expectsJson() || $request->is('api/*')) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Unauthenticated.',
-                ], 401);
-            }
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ], 401);
+        });
+
+        // Handle UnauthorizedHttpException (Symfony 401)
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException $e, Request $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ], 401);
         });
 
         // Handle ModelNotFoundException

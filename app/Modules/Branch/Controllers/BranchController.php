@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Modules\Branch\Controllers;
 
-use App\Domains\Branches\Models\Branch;
-use App\Http\Resources\BranchResource;
-use App\Support\ApiResponse;
+use App\Shared\Http\BaseApiController;
+use App\Modules\Branch\Models\Branch;
+use App\Modules\Branch\Resources\BranchResource;
+use App\Shared\Http\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

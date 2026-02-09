@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domains\Branches\Services;
 
-use App\Domains\Branches\Models\Branch;
+use App\Modules\Branch\Models\Branch;
 use App\Domains\Branches\Models\BranchWorkingHour;
 use App\Enums\DayOfWeek;
 use App\Support\BaseDomainService;

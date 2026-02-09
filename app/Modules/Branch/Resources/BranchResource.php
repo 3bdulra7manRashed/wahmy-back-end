@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Resources;
+namespace App\Modules\Branch\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Domains\Branches\Models\Branch
+ * @mixin \App\Modules\Branch\Models\Branch
  */
 class BranchResource extends JsonResource
 {

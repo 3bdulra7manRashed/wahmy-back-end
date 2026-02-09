@@ -16,37 +16,31 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->createSuperAdmin();
+        $this->createBranchAdmin();
     }
 
     /**
-     * Create the super admin user if it doesn't exist.
+     * Create the branch admin user if it doesn't exist.
      */
-    private function createSuperAdmin(): void
+    private function createBranchAdmin(): void
     {
-        $email = 'admin@wahmy.com';
-        $password = 'password123'; // TODO: Change in production!
+        $email = 'admin@branch.test';
 
         $user = User::where('email', $email)->first();
 
         if (! $user) {
             User::create([
-                'name' => 'Super Admin',
+                'name' => 'Branch Admin',
                 'email' => $email,
-                'password' => Hash::make($password),
-                'email_verified_at' => now(),
-                'role' => UserRole::SUPER_ADMIN,
+                'password' => Hash::make('password123'),
+                'role' => UserRole::ADMIN,
+                'is_active' => true,
+                'branch_id' => null,
             ]);
 
-            $this->command->info("Super Admin created: {$email} / {$password}");
+            $this->command->info("Branch Admin created: {$email}");
         } else {
-            // Ensure existing user has super_admin role
-            if ($user->role !== UserRole::SUPER_ADMIN) {
-                $user->update(['role' => UserRole::SUPER_ADMIN]);
-                $this->command->info("Super Admin role updated for: {$email}");
-            } else {
-                $this->command->info('Super Admin already exists with correct role.');
-            }
+            $this->command->info('Branch Admin already exists.');
         }
     }
 }
